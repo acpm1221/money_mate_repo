@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './AddTransaction.css';
-import BASE_URL from "../config"
+import BASE_URL from "../config";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AddTransaction({ token, type, onClose, onTransactionAdded }) {
   const [title, setTitle] = useState('');
@@ -12,12 +14,12 @@ function AddTransaction({ token, type, onClose, onTransactionAdded }) {
 
   const handleSubmit = async () => {
     if (!title || !category || !amount || !date) {
-      alert('Please fill all required fields!');
+      toast.error('Please fill all required fields!');
       return;
     }
 
     try {
-      await axios.post('${BASE_URL}/api/transactions', {
+      await axios.post(`${BASE_URL}/api/transactions`, {
         title,
         type,
         category,
@@ -27,10 +29,13 @@ function AddTransaction({ token, type, onClose, onTransactionAdded }) {
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      onTransactionAdded(); // refresh dashboard
-      onClose(); // close modal
+
+      toast.success('Transaction added successfully!');
+      onTransactionAdded(); // Refresh dashboard
+      onClose(); // Close modal
     } catch (err) {
-      alert('Error adding transaction');
+      console.error('Transaction Error:', err.response?.data || err.message);
+      toast.error('Error adding transaction');
     }
   };
 
