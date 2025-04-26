@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.bcf624c7.css",
+    "main.js": "/static/js/main.41ae8b33.js",
+    "static/media/top-view-finance-business-elements_23-2148793757-Picsart-AiImageEnhancer.jpg": "/static/media/top-view-finance-business-elements_23-2148793757-Picsart-AiImageEnhancer.be3e649c21187c510153.jpg",
+    "static/media/personal-expenses-concept-financial-analysis-background-golden-coins-pile-icons_488220-960.avif": "/static/media/personal-expenses-concept-financial-analysis-background-golden-coins-pile-icons_488220-960.70710e271271fd4aaee4.avif",
+    "index.html": "/index.html",
+    "main.bcf624c7.css.map": "/static/css/main.bcf624c7.css.map",
+    "main.41ae8b33.js.map": "/static/js/main.41ae8b33.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bcf624c7.css",
+    "static/js/main.41ae8b33.js"
+  ]
+}
