@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const Transaction = require('../models/Transaction');
+const Transaction = require('../models/transaction');
 const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
