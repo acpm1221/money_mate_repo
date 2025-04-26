@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './AddTransaction.css';
-impport BASE_URL from "../config"
+import BASE_URL from "../config"
 
 function AddTransaction({ token, type, onClose, onTransactionAdded }) {
   const [title, setTitle] = useState('');
