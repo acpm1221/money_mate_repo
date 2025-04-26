@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './AddTransaction.css';
+impport BASE_URL from "../config"
 
 function AddTransaction({ token, type, onClose, onTransactionAdded }) {
   const [title, setTitle] = useState('');
@@ -16,7 +17,7 @@ function AddTransaction({ token, type, onClose, onTransactionAdded }) {
     }
 
     try {
-      await axios.post('https://money-mate-repo.onrender.com/api/transactions', {
+      await axios.post('${BASE_URL}/api/transactions', {
         title,
         type,
         category,
