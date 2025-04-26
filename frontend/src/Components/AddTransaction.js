@@ -16,7 +16,7 @@ function AddTransaction({ token, type, onClose, onTransactionAdded }) {
     }
 
     try {
-      await axios.post('https://moneymate-1.onrender.com/api/transactions', {
+      await axios.post('https://money-mate-repo.onrender.com/api/transactions', {
         title,
         type,
         category,
