@@ -1,4 +1,4 @@
 // src/config.js
-const BASE_URL = "https://moneymate-1.onrender.com";
+const BASE_URL = "https://money-mate-repo.onrender.com";
 
 export default BASE_URL;
