@@ -19,6 +19,15 @@ function Signup() {
       return;
     }
 
+    // 🛡️ Password strength check (Frontend)
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    const numberRegex = /\d/;
+
+    if (!specialCharRegex.test(password) || !numberRegex.test(password)) {
+      setMessage({ type: 'error', text: "Password must contain at least one special character and one number." });
+      return;
+    }
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('email', email);
