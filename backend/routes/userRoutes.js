@@ -10,7 +10,6 @@ const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
 
 // Authentication middleware
-
 const auth = (req, res, next) => {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) return res.status(401).json({ error: 'Unauthorized' });
@@ -42,14 +41,20 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 /**
- *SIGNUP ROUTE
+ * SIGNUP ROUTE
  */
-
 router.post('/signup', upload.single('profilePic'), async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
         return res.status(400).json({ error: 'Name, email, and password are required' });
+    }
+
+    // Backend password validation (optional)
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    const numberRegex = /\d/;
+    if (!specialCharRegex.test(password) || !numberRegex.test(password)) {
+        return res.status(400).json({ error: "Password must contain at least one special character and one number." });
     }
 
     try {
@@ -110,9 +115,8 @@ router.get('/me', auth, async (req, res) => {
         if (!user) return res.status(404).json({ error: 'User not found' });
 
         // Full image URL if needed
-        
-        if (user.profilePic) {
-            user.profilePic = `http://localhost:5000/uploads/${user.profilePic}`;
+        if (user.profilePic && !user.profilePic.startsWith('http')) {
+            user.profilePic = `${req.protocol}://${req.get('host')}/uploads/${user.profilePic}`;
         }
 
         res.json(user);
