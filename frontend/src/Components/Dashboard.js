@@ -113,6 +113,18 @@ function Dashboard({ token }) {
         </div>
       </div>
 
+      {/* Income and Expense Summary */}
+      <div className="summary-section">
+        <div className="summary-card income-card">
+          <h3>Total Income</h3>
+          <p>₹{income}</p>
+        </div>
+        <div className="summary-card expense-card">
+          <h3>Total Expense</h3>
+          <p>₹{expense}</p>
+        </div>
+      </div>
+
       {/* Charts */}
       <div className="charts-grid">
         <div className="chart-card">
