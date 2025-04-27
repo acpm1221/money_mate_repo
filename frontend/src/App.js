@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './Components/Login';
 import Signup from './Components/Signup';
@@ -13,7 +12,6 @@ function App() {
 
   return (
     <Router>
-      {/* Global Toast Notifications */}
       <ToastContainer 
         position="top-right" 
         autoClose={3000} 
@@ -23,7 +21,6 @@ function App() {
         pauseOnHover 
         theme="colored"
       />
-
       <Routes>
         <Route path="/" element={<Login onLogin={() => window.location.href = '/dashboard'} />} />
         <Route path="/signup" element={<Signup />} />
