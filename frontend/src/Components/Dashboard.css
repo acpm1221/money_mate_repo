@@ -1,3 +1,4 @@
+/* Dashboard Main */
 .dashboard-container {
   padding: 2rem;
   background: #319bc4 url("../Assets/personal-expenses-concept-financial-analysis-background-golden-coins-pile-icons_488220-960.avif") no-repeat center center;
@@ -7,8 +8,9 @@
   font-family: 'Poppins', sans-serif;
 }
 
-/* Header Section */
+/* Header */
 .dashboard-header {
+  position: relative; /* ✅ Important for hamburger */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -36,9 +38,13 @@
   font-size: 2rem;
   cursor: pointer;
   color: white;
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  z-index: 100;
 }
 
-/* Action Buttons */
+/* Desktop Action Buttons */
 .action-buttons {
   display: flex;
   gap: 1rem;
@@ -46,6 +52,11 @@
   flex-wrap: wrap;
 }
 
+.desktop-buttons {
+  display: flex;
+}
+
+/* Buttons */
 .btn, .action-buttons button {
   padding: 0.6rem 1.2rem;
   background-color: #2196f3;
@@ -71,6 +82,7 @@
 
 .logout-btn {
   background-color: #ff5252;
+  margin-top: 2rem;
 }
 
 .logout-btn:hover {
@@ -82,11 +94,16 @@
   display: none;
   flex-direction: column;
   gap: 1rem;
-  margin: 1rem 0;
+  margin-top: 2rem;
   background: white;
   padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: absolute;
+  top: 4.5rem;
+  right: 2rem;
+  width: 220px;
+  z-index: 200;
 }
 
 /* Summary Cards */
@@ -140,7 +157,7 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Transaction Section */
+/* Transaction List */
 .transaction-list {
   list-style: none;
   padding: 0;
@@ -165,7 +182,7 @@
   font-size: 1.2rem;
 }
 
-/* Modals */
+/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -187,7 +204,7 @@
   max-width: 400px;
 }
 
-/* Responsive */
+/* Responsive Styles */
 @media (max-width: 900px) {
   .desktop-buttons {
     display: none;
