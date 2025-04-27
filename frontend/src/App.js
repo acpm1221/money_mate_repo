@@ -13,28 +13,24 @@ function App() {
 
   return (
     <Router>
-      {/* Toast Notification Container */}
+      {/* Global Toast Notifications */}
       <ToastContainer 
         position="top-right" 
         autoClose={3000} 
         hideProgressBar={false} 
-        newestOnTop={false} 
         closeOnClick 
-        rtl={false} 
-        pauseOnFocusLoss 
         draggable 
         pauseOnHover 
         theme="colored"
       />
 
       <Routes>
-        {/* If token exists, redirect to dashboard */}
         <Route path="/" element={<Login onLogin={() => window.location.href = '/dashboard'} />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={token ? <Dashboard token={token} /> : <Navigate to="/" />} />
         <Route path="/add/:type" element={token ? <AddTransaction token={token} /> : <Navigate to="/" />} />
         <Route path="/terms" element={<Terms />} />
-        {/* Fallback Route */}
+        {/* Redirect any unknown routes */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
