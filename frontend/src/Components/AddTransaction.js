@@ -3,7 +3,6 @@ import axios from 'axios';
 import './AddTransaction.css';
 import BASE_URL from "../config";
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 function AddTransaction({ token, type, onClose, onTransactionAdded }) {
   const [title, setTitle] = useState('');
@@ -19,7 +18,7 @@ function AddTransaction({ token, type, onClose, onTransactionAdded }) {
     }
 
     try {
-      await axios.post(`${BASE_URL}/api/transactions`, {
+      const response = await axios.post(`${BASE_URL}/api/transactions`, {
         title,
         type,
         category,
@@ -30,12 +29,16 @@ function AddTransaction({ token, type, onClose, onTransactionAdded }) {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      toast.success('Transaction added successfully!');
-      onTransactionAdded(); // Refresh dashboard
-      onClose(); // Close modal
+      if (response.status === 201 || response.status === 200) {
+        toast.success('Transaction added successfully!');
+        onTransactionAdded(); // Refresh dashboard
+        onClose(); // Close modal
+      } else {
+        toast.error('Unexpected response. Please try again.');
+      }
     } catch (err) {
       console.error('Transaction Error:', err.response?.data || err.message);
-      toast.error('Error adding transaction');
+      toast.error(err.response?.data?.error || 'Error adding transaction');
     }
   };
 
