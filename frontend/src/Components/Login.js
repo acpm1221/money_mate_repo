@@ -11,6 +11,12 @@ function Login({ onLogin }) {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter valid email ID");
+      return;
+    }
+
     try {
       const res = await axios.post(`${BASE_URL}/api/users/login`, { email, password });
       localStorage.setItem('token', res.data.token);
@@ -27,12 +33,6 @@ function Login({ onLogin }) {
       <div className="login-left">
         <h1>MoneyMate<br />Because Every Penny Counts.</h1>
         <p>Login and start tracking your expenses smarter and faster.</p>
-        <div className="social-icons">
-          <i className="fab fa-facebook-f"></i>
-          <i className="fab fa-twitter"></i>
-          <i className="fab fa-instagram"></i>
-          <i className="fab fa-youtube"></i>
-        </div>
       </div>
 
       <div className="login-right">
@@ -49,23 +49,14 @@ function Login({ onLogin }) {
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
-        <div className="remember-me">
-          <input type="checkbox" id="remember" />
-          <label htmlFor="remember">Remember Me</label>
-        </div>
         {error && <p className="error">{error}</p>}
+
         <button onClick={handleLogin}>Sign in now</button>
 
-        <Link to="/forgot-password" className="forgot-password">Lost your password?</Link>
+        <Link to="/forgot-password" className="forgot-password">Forgot Password?</Link>
 
         <p className="signup-text">
           New user? <Link to="/signup" className="signup-link">Sign up here</Link>
-        </p>
-
-        <p className="terms">
-          By clicking on "Sign in now" you agree to 
-          <Link to="/terms" className="terms-link"> Terms of Service</Link> | 
-          <Link to="/privacy" className="terms-link"> Privacy Policy</Link>
         </p>
       </div>
     </div>
