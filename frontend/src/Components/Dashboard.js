@@ -18,6 +18,10 @@ function Dashboard({ token }) {
   const [showModal, setShowModal] = useState(false);
   const [transactionType, setTransactionType] = useState('income');
   const [showEMIModal, setShowEMIModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showTransactionsModal, setShowTransactionsModal] = useState(false);
+  const [profilePicFile, setProfilePicFile] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,24 +49,6 @@ function Dashboard({ token }) {
     }
   };
 
-  const handleProfilePicChange = async (e) => {
-    const formData = new FormData();
-    formData.append('profilePic', e.target.files[0]);
-
-    try {
-      await axios.post(`${BASE_URL}/api/users/update-profile-pic`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      alert('Profile picture updated!');
-      fetchData();
-    } catch (err) {
-      console.error('Error updating profile pic:', err.response?.data || err.message);
-    }
-  };
-
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
@@ -73,12 +59,39 @@ function Dashboard({ token }) {
     setShowModal(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const handleProfileUpdate = async () => {
+    if (!profilePicFile) {
+      alert("Please select a file first!");
+      return;
+    }
+    const formData = new FormData();
+    formData.append('profilePic', profilePicFile);
+
+    try {
+      await axios.post(`${BASE_URL}/api/users/update-profile-pic`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      alert('Profile picture updated!');
+      setShowProfileModal(false);
+      fetchData();
+    } catch (err) {
+      console.error('Error updating profile pic:', err.response?.data || err.message);
+    }
   };
 
-  const refreshTransactions = async () => {
-    await fetchData();
+  const deleteTransaction = async (id) => {
+    try {
+      await axios.delete(`${BASE_URL}/api/transactions/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert("Transaction deleted!");
+      fetchData();
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
   };
 
   const chartData = [{ name: "Total", income, expense }];
@@ -103,17 +116,18 @@ function Dashboard({ token }) {
             <img className="profile-pic" src={user.profilePic} alt="Profile" />
           )}
           <h1>Welcome, {user.name}</h1>
-          <input type="file" onChange={handleProfilePicChange} />
         </div>
 
         <div className="action-buttons">
-          <button onClick={() => handleAddClick('income')}>➕ Add Income</button>
-          <button onClick={() => handleAddClick('expense')}>➖ Add Expense</button>
-          <button onClick={() => setShowEMIModal(true)}>📈 EMI Calculator</button>
+          <button className="income-btn btn" onClick={() => handleAddClick('income')}>➕ Add Income</button>
+          <button className="expense-btn btn" onClick={() => handleAddClick('expense')}>➖ Add Expense</button>
+          <button className="btn" onClick={() => setShowEMIModal(true)}>📈 EMI Calculator</button>
+          <button className="btn" onClick={() => setShowProfileModal(true)}>🖼 Change Profile Pic</button>
+          <button className="btn" onClick={() => setShowTransactionsModal(true)}>📜 Show All Transactions</button>
         </div>
       </div>
 
-      {/* Income and Expense Summary */}
+      {/* Summary Cards */}
       <div className="summary-section">
         <div className="summary-card income-card">
           <h3>Total Income</h3>
@@ -164,55 +178,57 @@ function Dashboard({ token }) {
         </div>
       </div>
 
-      {/* Date-wise Transactions */}
-      <div className="chart-card">
-        <h3>Date-wise Transaction Amount</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={dateWiseData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="amount" fill="#2196f3" />
-          </BarChart>
-        </ResponsiveContainer>
+      {/* Logout */}
+      <div className="logout-section">
+        <button className="logout-btn btn" onClick={handleLogout}>🚪 Sign Out</button>
       </div>
 
-      {/* Recent Transactions */}
-      <div className="transactions-section">
-        <h3>Recent Transactions</h3>
-        <ul className="transaction-list">
-          {transactions.map((trx) => (
-            <li key={trx._id} className="transaction-item">
-              <span>
-                {trx.date.split("T")[0]} - <b>{trx.type.toUpperCase()}</b>: ₹{trx.amount} ({trx.category})
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Logout Button */}
-      <button className="logout-btn" onClick={handleLogout}>Sign Out</button>
-
-      {/* Add Transaction Modal */}
+      {/* Modals */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <AddTransaction
               token={token}
               type={transactionType}
-              onClose={closeModal}
-              onTransactionAdded={refreshTransactions}
+              onClose={() => setShowModal(false)}
+              onTransactionAdded={fetchData}
             />
           </div>
         </div>
       )}
 
-      {/* EMI Calculator Modal */}
       {showEMIModal && (
         <EMICalculatorModal onClose={() => setShowEMIModal(false)} />
+      )}
+
+      {/* Profile Pic Modal */}
+      {showProfileModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Change Profile Picture</h2>
+            <input type="file" onChange={(e) => setProfilePicFile(e.target.files[0])} />
+            <button className="btn" onClick={handleProfileUpdate}>Update</button>
+            <button className="btn logout-btn" onClick={() => setShowProfileModal(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {/* Transactions Modal */}
+      {showTransactionsModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>All Transactions</h2>
+            <ul className="transaction-list">
+              {transactions.map(trx => (
+                <li key={trx._id} className="transaction-item">
+                  {trx.date.split("T")[0]} - {trx.type.toUpperCase()} ₹{trx.amount} ({trx.category})
+                  <button className="delete-btn" onClick={() => deleteTransaction(trx._id)}>🗑</button>
+                </li>
+              ))}
+            </ul>
+            <button className="btn logout-btn" onClick={() => setShowTransactionsModal(false)}>Close</button>
+          </div>
+        </div>
       )}
     </div>
   );
