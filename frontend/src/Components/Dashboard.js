@@ -21,6 +21,7 @@ function Dashboard({ token }) {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showTransactionsModal, setShowTransactionsModal] = useState(false);
   const [profilePicFile, setProfilePicFile] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -57,6 +58,7 @@ function Dashboard({ token }) {
   const handleAddClick = (type) => {
     setTransactionType(type);
     setShowModal(true);
+    setMenuOpen(false); // Close menu after action
   };
 
   const handleProfileUpdate = async () => {
@@ -118,7 +120,13 @@ function Dashboard({ token }) {
           <h1>Welcome, {user.name}</h1>
         </div>
 
-        <div className="action-buttons">
+        {/* Hamburger for mobile */}
+        <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
+        </div>
+
+        {/* Action Buttons (Desktop View) */}
+        <div className="action-buttons desktop-buttons">
           <button className="income-btn btn" onClick={() => handleAddClick('income')}>➕ Add Income</button>
           <button className="expense-btn btn" onClick={() => handleAddClick('expense')}>➖ Add Expense</button>
           <button className="btn" onClick={() => setShowEMIModal(true)}>📈 EMI Calculator</button>
@@ -126,6 +134,17 @@ function Dashboard({ token }) {
           <button className="btn" onClick={() => setShowTransactionsModal(true)}>📜 Show All Transactions</button>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="mobile-menu">
+          <button className="income-btn btn" onClick={() => handleAddClick('income')}>➕ Add Income</button>
+          <button className="expense-btn btn" onClick={() => handleAddClick('expense')}>➖ Add Expense</button>
+          <button className="btn" onClick={() => { setShowEMIModal(true); setMenuOpen(false); }}>📈 EMI Calculator</button>
+          <button className="btn" onClick={() => { setShowProfileModal(true); setMenuOpen(false); }}>🖼 Change Profile Pic</button>
+          <button className="btn" onClick={() => { setShowTransactionsModal(true); setMenuOpen(false); }}>📜 Show All Transactions</button>
+        </div>
+      )}
 
       {/* Summary Cards */}
       <div className="summary-section">
