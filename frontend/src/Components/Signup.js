@@ -46,10 +46,10 @@ function Signup() {
       await axios.post(`${BASE_URL}/api/users/signup`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      setMessage({ type: 'success', text: 'Signup successful!' });
+      setMessage({ type: 'success', text: 'Signup successful! Redirecting to login...' });
       setTimeout(() => {
         navigate('/login');
-      }, 3000);
+      }, 2000);
     } catch (err) {
       setMessage({ type: 'error', text: err.response?.data?.error || "Signup failed" });
     }
@@ -58,12 +58,12 @@ function Signup() {
   return (
     <div className="signup-page">
       <div className="signup-left">
-        <h1>MoneyMate<br />Because Every Penny Counts.<br />Join Us Today</h1>
-        <p>Create an account and start tracking your expenses smarter and faster.</p>
+        <h1>MoneyMate<br />Join Us Today</h1>
       </div>
 
       <div className="signup-right">
         <h2>Sign up</h2>
+
         <input
           type="text"
           placeholder="Name"
@@ -99,6 +99,7 @@ function Signup() {
           accept="image/*"
           onChange={e => setProfilePic(e.target.files[0])}
         />
+
         <div className="agree-terms">
           <input
             type="checkbox"
@@ -106,16 +107,15 @@ function Signup() {
             onChange={e => setAgreed(e.target.checked)}
             id="terms"
           />
-          <label htmlFor="terms">
-            I agree to the
-            <Link to="/terms" target="_blank" rel="noopener noreferrer"> Terms & Conditions</Link>
-          </label>
+          <label htmlFor="terms">I agree to the <Link to="/terms" target="_blank">Terms & Conditions</Link></label>
         </div>
+
         {message && (
           <p className={message.type === 'error' ? 'error' : 'success'}>
             {message.text}
           </p>
         )}
+
         <button onClick={handleSignup} disabled={!agreed}>Sign up now</button>
 
         <p className="login-text">
