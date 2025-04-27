@@ -8,21 +8,27 @@ function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [securityQuestion, setSecurityQuestion] = useState('');
+  const [securityAnswer, setSecurityAnswer] = useState('');
   const [profilePic, setProfilePic] = useState(null);
   const [agreed, setAgreed] = useState(false);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSignup = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setMessage({ type: 'error', text: "Please enter valid email ID" });
+      return;
+    }
+
     if (!agreed) {
       setMessage({ type: 'error', text: "You must agree to the terms and conditions." });
       return;
     }
 
-    // 🛡️ Password strength check (Frontend)
     const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
     const numberRegex = /\d/;
-
     if (!specialCharRegex.test(password) || !numberRegex.test(password)) {
       setMessage({ type: 'error', text: "Password must contain at least one special character and one number." });
       return;
@@ -32,6 +38,8 @@ function Signup() {
     formData.append('name', name);
     formData.append('email', email);
     formData.append('password', password);
+    formData.append('securityQuestion', securityQuestion);
+    formData.append('securityAnswer', securityAnswer);
     if (profilePic) formData.append('profilePic', profilePic);
 
     try {
@@ -52,12 +60,6 @@ function Signup() {
       <div className="signup-left">
         <h1>MoneyMate<br />Because Every Penny Counts.<br />Join Us Today</h1>
         <p>Create an account and start tracking your expenses smarter and faster.</p>
-        <div className="social-icons">
-          <i className="fab fa-facebook-f"></i>
-          <i className="fab fa-twitter"></i>
-          <i className="fab fa-instagram"></i>
-          <i className="fab fa-youtube"></i>
-        </div>
       </div>
 
       <div className="signup-right">
@@ -79,6 +81,18 @@ function Signup() {
           placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Security Question"
+          value={securityQuestion}
+          onChange={e => setSecurityQuestion(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Security Answer"
+          value={securityAnswer}
+          onChange={e => setSecurityAnswer(e.target.value)}
         />
         <input
           type="file"
