@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../config";
 import AddTransaction from "./AddTransaction";
 import EMICalculatorModal from "./EMICalculatorModal";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell
+} from "recharts";
 import "./Dashboard.css";
 
 function Dashboard({ token }) {
@@ -15,6 +19,10 @@ function Dashboard({ token }) {
   const [transactionType, setTransactionType] = useState('income');
   const [showEMIModal, setShowEMIModal] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchData();
+  }, [token]);
 
   const fetchData = async () => {
     try {
@@ -37,16 +45,12 @@ function Dashboard({ token }) {
     }
   };
 
-  useState(() => {
-    fetchData();
-  }, [token]);
-
   const handleProfilePicChange = async (e) => {
     const formData = new FormData();
     formData.append('profilePic', e.target.files[0]);
 
     try {
-      const res = await axios.post(`${BASE_URL}/api/users/update-profile-pic`, formData, {
+      await axios.post(`${BASE_URL}/api/users/update-profile-pic`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -69,6 +73,27 @@ function Dashboard({ token }) {
     setShowModal(true);
   };
 
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const refreshTransactions = async () => {
+    await fetchData();
+  };
+
+  const chartData = [{ name: "Total", income, expense }];
+  const pieData = [
+    { name: "Income", value: income },
+    { name: "Expense", value: expense },
+  ];
+  const pieColors = ["#4caf50", "#f44336"];
+
+  const dateWiseData = transactions.map((t) => ({
+    date: t.date.split("T")[0],
+    amount: t.amount,
+    type: t.type,
+  }));
+
   return (
     <div className="dashboard-container">
       {/* Header */}
@@ -88,22 +113,95 @@ function Dashboard({ token }) {
         </div>
       </div>
 
-      {/* Show Modals */}
+      {/* Charts */}
+      <div className="charts-grid">
+        <div className="chart-card">
+          <h3>Total Income vs Expense</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="income" fill="#4caf50" />
+              <Bar dataKey="expense" fill="#f44336" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="chart-card">
+          <h3>Transaction Breakdown</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={pieData}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={90}
+                label
+              >
+                {pieData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={pieColors[index % pieColors.length]} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Date-wise Transactions */}
+      <div className="chart-card">
+        <h3>Date-wise Transaction Amount</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={dateWiseData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="amount" fill="#2196f3" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Recent Transactions */}
+      <div className="transactions-section">
+        <h3>Recent Transactions</h3>
+        <ul className="transaction-list">
+          {transactions.map((trx) => (
+            <li key={trx._id} className="transaction-item">
+              <span>
+                {trx.date.split("T")[0]} - <b>{trx.type.toUpperCase()}</b>: ₹{trx.amount} ({trx.category})
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Logout Button */}
+      <button className="logout-btn" onClick={handleLogout}>Sign Out</button>
+
+      {/* Add Transaction Modal */}
       {showModal && (
-        <AddTransaction
-          token={token}
-          type={transactionType}
-          onClose={() => setShowModal(false)}
-          onTransactionAdded={fetchData}
-        />
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <AddTransaction
+              token={token}
+              type={transactionType}
+              onClose={closeModal}
+              onTransactionAdded={refreshTransactions}
+            />
+          </div>
+        </div>
       )}
 
+      {/* EMI Calculator Modal */}
       {showEMIModal && (
         <EMICalculatorModal onClose={() => setShowEMIModal(false)} />
       )}
-
-      {/* Logout */}
-      <button className="logout-btn" onClick={handleLogout}>Sign Out</button>
     </div>
   );
 }
