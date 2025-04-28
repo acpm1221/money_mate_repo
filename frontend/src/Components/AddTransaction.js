@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import './AddTransaction.css';
-import BASE_URL from "../config"; // Make sure this is correct
+import BASE_URL from "../config"; 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
