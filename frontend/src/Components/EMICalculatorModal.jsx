@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './ModalStyles.css'; // 👈 new common CSS
+import './ModalStyles.css'; // 
 
 function EMICalculatorModal({ onClose }) {
   const [amount, setAmount] = useState('');
