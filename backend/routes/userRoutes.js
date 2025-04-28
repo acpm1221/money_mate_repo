@@ -63,7 +63,7 @@ router.post('/signup', upload.single('profilePic'), async (req, res) => {
     });
 
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: '1h' });
-    res.json({ token }); // ✅ Always send token after signup
+    res.json({ token }); 
   } catch (err) {
     console.error('Signup error:', err);
     res.status(500).json({ error: 'Server error during signup' });
