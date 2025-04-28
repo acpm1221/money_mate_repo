@@ -150,7 +150,7 @@ function Dashboard({ token }) {
       <div className="summary-section">
         <div className="summary-card income-card">
           <h3>Total Income</h3>
-          <p>₹{income}</p>
+          <p>₹{income-expense}</p>
         </div>
         <div className="summary-card expense-card">
           <h3>Total Expense</h3>
