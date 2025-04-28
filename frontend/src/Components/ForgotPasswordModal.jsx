@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import BASE_URL from '../config';
-
+import './ModalStyles.css'; // 👈 common CSS
 
 function ForgotPasswordModal({ onClose }) {
   const [email, setEmail] = useState('');
@@ -36,23 +36,49 @@ function ForgotPasswordModal({ onClose }) {
 
   return (
     <div className="modal-overlay">
-      <div className="modal-content">
-        {step === 1 ? (
-          <>
-            <h2>Forgot Password</h2>
-            <input type="email" placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)} />
-            <button onClick={getSecurityQuestion}>Next</button>
-          </>
-        ) : (
-          <>
-            <h2>Answer Security Question</h2>
-            <p>{securityQuestion}</p>
-            <input type="text" placeholder="Answer" value={answer} onChange={e => setAnswer(e.target.value)} />
-            <input type="password" placeholder="New Password" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
-            <button onClick={resetPassword}>Reset Password</button>
-          </>
-        )}
-        <button onClick={onClose} className="close-btn">X</button>
+      <div className="add-transaction-container">
+        <button className="close-btn" onClick={onClose}>×</button>
+
+        <div className="form-card">
+          {step === 1 ? (
+            <>
+              <h2>Forgot Password</h2>
+              <input
+                type="email"
+                placeholder="Enter your Email*"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+              />
+              <div className="button-group">
+                <button className="submit-btn" onClick={getSecurityQuestion}>Next</button>
+                <button className="cancel-btn" onClick={onClose}>Cancel</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2>Answer Security Question</h2>
+              <p style={{ marginBottom: '10px', textAlign: 'center', color: '#555' }}>
+                {securityQuestion}
+              </p>
+              <input
+                type="text"
+                placeholder="Answer*"
+                value={answer}
+                onChange={e => setAnswer(e.target.value)}
+              />
+              <input
+                type="password"
+                placeholder="New Password*"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+              />
+              <div className="button-group">
+                <button className="submit-btn" onClick={resetPassword}>Reset Password</button>
+                <button className="cancel-btn" onClick={onClose}>Cancel</button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
