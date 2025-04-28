@@ -1,115 +1,142 @@
+
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   z-index: 1000;
 }
 
-.add-transaction-container {
-  background: white;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  padding: 2rem 1.5rem;
-  position: relative;
-  animation: popup 0.3s ease-out;
-}
-
-@keyframes popup {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.form-card h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #333;
-  font-size: 24px;
-}
-
-.form-card p {
-  font-size: 14px;
-  color: #666;
-  text-align: center;
-}
-
-.form-card input,
-.form-card textarea {
+/* Main Modal Container */
+.forgot-password-container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.2s;
+  max-width: 400px;
+  padding: 30px;
+  text-align: center;
 }
 
-.form-card input:focus,
-.form-card textarea:focus {
+/* Header */
+.modal-header {
+  margin-bottom: 25px;
+}
+
+.modal-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 5px;
+}
+
+.modal-subtitle {
+  font-size: 1rem;
+  color: #718096;
+  margin-bottom: 20px;
+}
+
+/* Form Elements */
+.forgot-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.forgot-password-form input {
+  padding: 12px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.forgot-password-form input:focus {
   outline: none;
-  border-color: #4caf50;
+  border-color: #4299e1;
 }
 
+/* Buttons */
 .button-group {
   display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-.submit-btn, .cancel-btn {
+.primary-btn, .secondary-btn {
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
   flex: 1;
-  padding: 10px 0;
+  transition: all 0.2s;
+}
+
+.primary-btn {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+}
+
+.primary-btn:hover {
+  background-color: #3182ce;
+}
+
+.secondary-btn {
+  background-color: white;
+  color: #4a5568;
+  border: 1px solid #e2e8f0;
+}
+
+.secondary-btn:hover {
+  background-color: #f7fafc;
+}
+
+/* Links */
+.auth-links {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.auth-links a {
+  color: #4299e1;
+  text-decoration: none;
   margin: 0 5px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s;
 }
 
-.submit-btn {
-  background-color: #4caf50;
-  color: white;
+.auth-links a:hover {
+  text-decoration: underline;
 }
 
-.submit-btn:hover {
-  background-color: #43a047;
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .forgot-password-container {
+    max-width: 350px;
+    padding: 25px;
+  }
 }
 
-.cancel-btn {
-  background-color: #f44336;
-  color: white;
-}
-
-.cancel-btn:hover {
-  background-color: #e53935;
-}
-
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  background: none;
-  border: none;
-  font-size: 26px;
-  color: #888;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.close-btn:hover {
-  color: #f44336;
+@media (max-width: 480px) {
+  .forgot-password-container {
+    max-width: 90%;
+    padding: 20px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    margin-top: -50px;
+  }
+  
+  .primary-btn, .secondary-btn {
+    width: 100%;
+  }
 }
