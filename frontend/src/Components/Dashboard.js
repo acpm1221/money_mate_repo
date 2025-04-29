@@ -26,29 +26,29 @@ function Dashboard({ token }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userRes = await axios.get(`${BASE_URL}/api/users/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(userRes.data);
+
+        const trxRes = await axios.get(`${BASE_URL}/api/transactions`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setTransactions(trxRes.data);
+
+        const inc = trxRes.data.filter(t => t.type === "income").reduce((acc, cur) => acc + cur.amount, 0);
+        const exp = trxRes.data.filter(t => t.type === "expense").reduce((acc, cur) => acc + cur.amount, 0);
+        setIncome(inc);
+        setExpense(exp);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    };
+
     fetchData();
   }, [token]);
-
-  const fetchData = async () => {
-    try {
-      const userRes = await axios.get(`${BASE_URL}/api/users/me`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUser(userRes.data);
-
-      const trxRes = await axios.get(`${BASE_URL}/api/transactions`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setTransactions(trxRes.data);
-
-      const inc = trxRes.data.filter(t => t.type === "income").reduce((acc, cur) => acc + cur.amount, 0);
-      const exp = trxRes.data.filter(t => t.type === "expense").reduce((acc, cur) => acc + cur.amount, 0);
-      setIncome(inc);
-      setExpense(exp);
-    } catch (err) {
-      console.error("Error fetching data:", err);
-    }
-  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -58,7 +58,7 @@ function Dashboard({ token }) {
   const handleAddClick = (type) => {
     setTransactionType(type);
     setShowModal(true);
-    setMenuOpen(false); // Close menu after action
+    setMenuOpen(false);
   };
 
   const handleProfileUpdate = async () => {
@@ -78,7 +78,11 @@ function Dashboard({ token }) {
       });
       alert('Profile picture updated!');
       setShowProfileModal(false);
-      fetchData();
+      // Refetch updated user
+      const updatedUser = await axios.get(`${BASE_URL}/api/users/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(updatedUser.data);
     } catch (err) {
       console.error('Error updating profile pic:', err.response?.data || err.message);
     }
@@ -90,7 +94,15 @@ function Dashboard({ token }) {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("Transaction deleted!");
-      fetchData();
+      const updatedTrx = await axios.get(`${BASE_URL}/api/transactions`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTransactions(updatedTrx.data);
+
+      const inc = updatedTrx.data.filter(t => t.type === "income").reduce((acc, cur) => acc + cur.amount, 0);
+      const exp = updatedTrx.data.filter(t => t.type === "expense").reduce((acc, cur) => acc + cur.amount, 0);
+      setIncome(inc);
+      setExpense(exp);
     } catch (err) {
       console.error("Delete error:", err);
     }
@@ -102,12 +114,6 @@ function Dashboard({ token }) {
     { name: "Expense", value: expense },
   ];
   const pieColors = ["#4caf50", "#f44336"];
-
-  const dateWiseData = transactions.map((t) => ({
-    date: t.date.split("T")[0],
-    amount: t.amount,
-    type: t.type,
-  }));
 
   return (
     <div className="dashboard-container">
@@ -125,7 +131,7 @@ function Dashboard({ token }) {
           ☰
         </div>
 
-        {/* Action Buttons (Desktop View) */}
+        {/* Desktop Action Buttons */}
         <div className="action-buttons desktop-buttons">
           <button className="income-btn btn" onClick={() => handleAddClick('income')}>➕ Add Income</button>
           <button className="expense-btn btn" onClick={() => handleAddClick('expense')}>➖ Add Expense</button>
@@ -150,7 +156,7 @@ function Dashboard({ token }) {
       <div className="summary-section">
         <div className="summary-card income-card">
           <h3>Remaining</h3>
-          <p>₹{income-expense}</p>
+          <p>₹{income - expense}</p>
         </div>
         <div className="summary-card expense-card">
           <h3>Total Expense</h3>
@@ -210,7 +216,7 @@ function Dashboard({ token }) {
               token={token}
               type={transactionType}
               onClose={() => setShowModal(false)}
-              onTransactionAdded={fetchData}
+              onTransactionAdded={() => window.location.reload()} // quick refresh after add
             />
           </div>
         </div>
@@ -220,7 +226,6 @@ function Dashboard({ token }) {
         <EMICalculatorModal onClose={() => setShowEMIModal(false)} />
       )}
 
-      {/* Profile Pic Modal */}
       {showProfileModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -232,7 +237,6 @@ function Dashboard({ token }) {
         </div>
       )}
 
-      {/* Transactions Modal */}
       {showTransactionsModal && (
         <div className="modal-overlay">
           <div className="modal-content">
