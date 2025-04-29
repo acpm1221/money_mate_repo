@@ -121,7 +121,7 @@ router.post('/reset-password', async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user || user.securityAnswer !== securityAnswer) {
-      return res.status(400).json({ error: 'Invalid answer or email' });
+      return res.status(400).json({ error: 'Invalid answer' });
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
